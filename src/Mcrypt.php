@@ -29,7 +29,7 @@ class Mcrypt implements Crypter
     public function decrypt($data)
     {
         $ret = mcrypt_decrypt($this->cipher, $this->key, $data, $this->mode, $this->iv);
-        for ($i = strlen($ret) - 1; $i >= 0 ; $i--) {
+        for ($i = strlen($ret) - 1; $i >= 0; $i--) {
             if (substr($ret, $i, 1) != "\x0") {
                 $ret = substr($ret, 0, $i+1);
                 break;
