@@ -6,9 +6,6 @@ use Fruit\CryptoKit\ROT13;
 
 class ROT13Test extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @requires extension mcrypt
-     */
     public function testROT13()
     {
         $mc = new ROT13();
