@@ -4,6 +4,13 @@ namespace Fruit\CryptoKit;
 
 class MockCrypter implements Crypter
 {
+    private $blockSize;
+
+    public function __construct($blockSize = -1)
+    {
+        $this->blockSize = $blockSize;
+    }
+
     public function encrypt($data)
     {
         return $data;
@@ -12,5 +19,10 @@ class MockCrypter implements Crypter
     public function decrypt($data)
     {
         return $data;
+    }
+
+    public function getBlockSize()
+    {
+        return $this->blockSize;
     }
 }

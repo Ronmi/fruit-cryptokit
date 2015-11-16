@@ -4,17 +4,21 @@ namespace Fruit\CryptoKit;
 
 class Mcrypt implements Crypter
 {
-    private $cipher;
+    private $module;
     private $key;
-    private $mode;
     private $iv;
 
     public function __construct($cipher, $key, $mode, $iv = null)
     {
-        $this->cipher = $cipher;
+        $this->module = mcrypt_module_open($cipher, '', $mode, '');
+        if (strlen($key) > mcrypt_enc_get_key_size($this->module)) {
+            throw new \Exception(sprintf(
+                'Key size for %s-%s is %d',
+                $cipher, $mode, mcrypt_enc_get_key_size($this->module)
+            ));
+        }
         $this->key = $key;
-        $this->mode = $mode;
-        $ivsize = mcrypt_get_iv_size($cipher, $mode);
+        $ivsize = mcrypt_enc_get_iv_size($this->module);
         if ($iv === null and $ivsize > 0) {
             $iv = mcrypt_create_iv($ivsize);
         }
@@ -23,12 +27,18 @@ class Mcrypt implements Crypter
 
     public function encrypt($data)
     {
-        return mcrypt_encrypt($this->cipher, $this->key, $data, $this->mode, $this->iv);
+        mcrypt_generic_init($this->module, $this->key, $this->iv);
+        $ret = mcrypt_generic($this->module, $data);
+        mcrypt_generic_deinit($this->module);
+        return $ret;
     }
 
     public function decrypt($data)
     {
-        $ret = mcrypt_decrypt($this->cipher, $this->key, $data, $this->mode, $this->iv);
+        mcrypt_generic_init($this->module, $this->key, $this->iv);
+        $ret = mdecrypt_generic($this->module, $data);
+        mcrypt_generic_deinit($this->module);
+
         for ($i = strlen($ret) - 1; $i >= 0; $i--) {
             if (substr($ret, $i, 1) != "\x0") {
                 $ret = substr($ret, 0, $i+1);
@@ -36,5 +46,10 @@ class Mcrypt implements Crypter
             }
         }
         return $ret;
+    }
+
+    public function getBlockSize()
+    {
+        return mcrypt_get_block_size($this->cipher, $this->mode);
     }
 }

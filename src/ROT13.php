@@ -13,4 +13,9 @@ class ROT13 implements Crypter
     {
         return str_rot13($data);
     }
+
+    public function getBlockSize()
+    {
+        return 1;
+    }
 }
