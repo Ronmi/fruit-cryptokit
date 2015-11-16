@@ -83,7 +83,7 @@ class CryptoFilter extends \php_user_filter
         }
 
         $this->buffer = '';
-        $this->temp = @fopen('php://temp', 'w+');
+        $this->temp = @fopen('php://memory', 'w+');
 
         return is_resource($this->temp);
     }
