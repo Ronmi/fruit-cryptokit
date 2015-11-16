@@ -9,7 +9,7 @@ namespace Fruit\CryptoKit;
  * - crypter: an instance of Crypter.
  * - crypt_type: string, 'encrypt' or 'decrypt', case-insensitive.
  */
-class CryptoFilter
+class CryptoFilter extends \php_user_filter
 {
     protected $crypter;
     protected $type;
