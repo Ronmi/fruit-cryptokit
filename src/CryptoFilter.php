@@ -21,7 +21,7 @@ class CryptoFilter extends \php_user_filter
     public function filter($in, $out, &$consumed, $closing)
     {
         $type = $this->type;
-        $ret = \PSFS_FEED_ME;
+        $ret = PSFS_FEED_ME;
         while ($bucket = stream_bucket_make_writeable($in)) {
             $consumed += $bucket->datalen;
             $this->buffer .= $bucket->data;
@@ -41,18 +41,17 @@ class CryptoFilter extends \php_user_filter
 
             $bucket = stream_bucket_new($this->temp, $data);
             if ($bucket === false) {
-                return \PSFS_ERR_FATAL;
+                return PSFS_ERR_FATAL;
             }
             stream_bucket_append($out, $bucket);
             $ret = PSFS_PASS_ON;
         }
 
-        $len = strlen($this->buffer);
         // process rest data if we are closing
-        if ($closing && $len > 0) {
+        if ($closing and strlen($this->buffer) > 0) {
             $bucket = stream_bucket_new($this->temp, $this->crypter->$type($this->buffer));
             if ($bucket === false) {
-                return \PSFS_ERR_FATAL;
+                return PSFS_ERR_FATAL;
             }
             $this->buffer = '';
             stream_bucket_append($out, $bucket);
