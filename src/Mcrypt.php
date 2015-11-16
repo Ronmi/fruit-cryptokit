@@ -13,7 +13,7 @@ class Mcrypt implements Crypter
         $this->module = mcrypt_module_open($cipher, '', $mode, '');
         if (strlen($key) > mcrypt_enc_get_key_size($this->module)) {
             throw new \Exception(sprintf(
-                'Key size for %s-%s is %d',
+                'Fruit\CryptoKit\Mcrypt: Key size for %s-%s is %d',
                 $cipher, $mode, mcrypt_enc_get_key_size($this->module)
             ));
         }
