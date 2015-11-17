@@ -5,6 +5,7 @@ namespace Fruit\CryptoKit;
 class Hash implements Hasher
 {
     private $algo;
+    private $ctx;
 
     public function __construct($algo)
     {
@@ -12,17 +13,35 @@ class Hash implements Hasher
             throw new \Exception(sprintf('Fruit\CryptoKit\Hash: %s is not supported on this machine.', $algo));
         }
         $this->algo = $algo;
+        $this->ctx = null;
     }
 
-    public function sum($data)
+    protected function init()
     {
-        return hash($this->algo, $data);
+        if ($this->ctx === null) {
+            $this->ctx = hash_init($this->algo);
+        }
     }
 
-    public function sumStream($handle)
+    public function update($data)
     {
-        $ctx = hash_init($this->algo);
-        hash_update_stream($ctx, $handle);
-        return hash_final($ctx);
+        $this->init();
+        hash_update($this->ctx, $data);
+        return $this;
+    }
+
+    public function updateStream($handle)
+    {
+        $this->init();
+        hash_update_stream($this->ctx, $handle);
+        return $this;
+    }
+
+    public function sum($raw = false)
+    {
+        $this->init();
+        $ret = hash_final($this->ctx, $raw);
+        $this->ctx = null;
+        return $ret;
     }
 }
