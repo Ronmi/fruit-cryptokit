@@ -13,7 +13,9 @@
 	"phploc/phploc": "*",
 	"pdepend/pdepend": "*",
 	"phpmd/phpmd": "*",
-	"sebastian/phpcpd": "*"
+	"sebastian/phpcpd": "*",
+	"fruit/benchkit": "1.1.2",
+	"lox/xhprof": "@dev"
     },
     "require": {
     },

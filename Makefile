@@ -1,7 +1,10 @@
 #!/usr/bin/make -f
 
-.PHONY: force-update clean prepare lint \
+.PHONY: force-update clean prepare lint bench \
 	phploc pdepend phpmd phpcs phpcpd test docs
+
+bench: vendor/autoload.php
+	vendor/bin/bench run bench
 
 lint:
 	find src -name '*.php' -exec php -l {} \;
