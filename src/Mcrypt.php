@@ -39,13 +39,7 @@ class Mcrypt implements Crypter
         $ret = mdecrypt_generic($this->module, $data);
         mcrypt_generic_deinit($this->module);
 
-        for ($i = strlen($ret) - 1; $i >= 0; $i--) {
-            if (substr($ret, $i, 1) != "\x0") {
-                $ret = substr($ret, 0, $i+1);
-                break;
-            }
-        }
-        return $ret;
+        return rtrim($ret, "\0");
     }
 
     public function getBlockSize()
