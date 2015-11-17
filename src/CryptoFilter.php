@@ -91,5 +91,4 @@ class CryptoFilter extends \php_user_filter
     {
         @fclose($this->temp);
     }
-
 }

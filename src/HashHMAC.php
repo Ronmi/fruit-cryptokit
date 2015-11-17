@@ -45,7 +45,8 @@ class HashHMAC implements Hasher
         return $this;
     }
 
-    public function sum($raw = false) {
+    public function sum($raw = false)
+    {
         $this->needReset = true;
 
         $tmp = $this->hash->sum(true);

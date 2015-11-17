@@ -14,7 +14,9 @@ class Mcrypt implements Crypter
         if (strlen($key) > mcrypt_enc_get_key_size($this->module)) {
             throw new \Exception(sprintf(
                 'Fruit\CryptoKit\Mcrypt: Key size for %s-%s is %d',
-                $cipher, $mode, mcrypt_enc_get_key_size($this->module)
+                $cipher,
+                $mode,
+                mcrypt_enc_get_key_size($this->module)
             ));
         }
         $this->key = $key;
