@@ -35,7 +35,7 @@ fclose($f);
 
 ```php
 $h = new Fruit\CryptoKit\Hash('md5');
-$hashsum = $h->sum($data);
+$hashsum = $h->update($data)->sum();
 ```
 
 ### Compute hashsum via stream
@@ -43,7 +43,7 @@ $hashsum = $h->sum($data);
 ```php
 $f = fopen('myfile', 'r');
 $h = new Fruit\CryptoKit\Hash('md5');
-$hashsum = $h->sumStream($f);
+$hashsum = $h->updateStream($f)->sum();
 fclose($f);
 ```
 
