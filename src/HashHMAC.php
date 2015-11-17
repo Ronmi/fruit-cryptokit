@@ -2,6 +2,8 @@
 
 namespace Fruit\CryptoKit;
 
+// place redundent codes in update() and updateStream() to prevent function call
+// when initializing.
 class HashHMAC implements Hasher
 {
     private $hash;
@@ -23,24 +25,22 @@ class HashHMAC implements Hasher
         $this->needReset = true;
     }
 
-    protected function init()
+    public function update($data)
     {
         if ($this->needReset) {
             $this->needReset = false;
             $this->hash->update($this->inner);
         }
-    }
-
-    public function update($data)
-    {
-        $this->init();
         $this->hash->update($data);
         return $this;
     }
 
     public function updateStream($handle)
     {
-        $this->init();
+        if ($this->needReset) {
+            $this->needReset = false;
+            $this->hash->update($this->inner);
+        }
         $this->hash->updateStream($handle);
         return $this;
     }
@@ -49,8 +49,7 @@ class HashHMAC implements Hasher
         $this->needReset = true;
 
         $tmp = $this->hash->sum(true);
-        $this->hash->update($this->outer);
-        $this->hash->update($tmp);
+        $this->hash->update($this->outer . $tmp);
         return $this->hash->sum($raw);
     }
 }

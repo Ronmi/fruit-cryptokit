@@ -2,6 +2,8 @@
 
 namespace Fruit\CryptoKit;
 
+// place redundent codes in update(), updateStream() and sum() to prevent
+// function call when initializing.
 class Hash implements Hasher
 {
     private $algo;
@@ -10,36 +12,37 @@ class Hash implements Hasher
     public function __construct($algo)
     {
         if (!in_array($algo, hash_algos())) {
-            throw new \Exception(sprintf('Fruit\CryptoKit\Hash: %s is not supported on this machine.', $algo));
+            throw new \Exception(
+                sprintf('Fruit\CryptoKit\Hash: %s is not supported on this machine.', $algo)
+            );
         }
         $this->algo = $algo;
         $this->ctx = null;
     }
 
-    protected function init()
+    public function update($data)
     {
         if ($this->ctx === null) {
             $this->ctx = hash_init($this->algo);
         }
-    }
-
-    public function update($data)
-    {
-        $this->init();
         hash_update($this->ctx, $data);
         return $this;
     }
 
     public function updateStream($handle)
     {
-        $this->init();
+        if ($this->ctx === null) {
+            $this->ctx = hash_init($this->algo);
+        }
         hash_update_stream($this->ctx, $handle);
         return $this;
     }
 
     public function sum($raw = false)
     {
-        $this->init();
+        if ($this->ctx === null) {
+            $this->ctx = hash_init($this->algo);
+        }
         $ret = hash_final($this->ctx, $raw);
         $this->ctx = null;
         return $ret;
