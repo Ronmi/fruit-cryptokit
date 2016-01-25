@@ -3,7 +3,7 @@
 namespace Fruit\CryptoKit;
 
 /// A Crypter implementation MUST ALWAYS return raw binary string.
-interface Crypter
+interface Crypter extends \Fruit\Module
 {
     // These two methods should return raw binary string.
     public function encrypt($data);

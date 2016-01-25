@@ -2,14 +2,21 @@
 
 namespace Fruit\CryptoKit;
 
+use Fruit\ModuleHelperTrait;
+
 class Mcrypt implements Crypter
 {
+    use ModuleHelperTrait;
     private $module;
     private $key;
     private $iv;
+    private $cipher;
+    private $mode;
 
     public function __construct($cipher, $key, $mode, $iv = null)
     {
+        $this->cipher = $cipher;
+        $this->mode = $mode;
         $this->module = mcrypt_module_open($cipher, '', $mode, '');
         if (strlen($key) > mcrypt_enc_get_key_size($this->module)) {
             throw new \Exception(sprintf(
@@ -25,6 +32,21 @@ class Mcrypt implements Crypter
             $iv = mcrypt_create_iv($ivsize);
         }
         $this->iv = $iv;
+    }
+
+    public function compile()
+    {
+        return $this->toCompile(array(
+            'cipher' => $this->cipher,
+            'key' => $this->key,
+            'mode' => $this->mode,
+            'iv' => $this->iv,
+        ));
+    }
+
+    public static function __set_state(array $props)
+    {
+        return new self($props['cipher'], $props['key'], $props['mode'], $props['iv']);
     }
 
     public function encrypt($data)

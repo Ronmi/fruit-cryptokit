@@ -2,16 +2,23 @@
 
 namespace Fruit\CryptoKit;
 
+use Fruit\ModuleHelperTrait;
+
 // place redundent codes in update() and updateStream() to prevent function call
 // when initializing.
 class HashHMAC implements Hasher
 {
+    use ModuleHelperTrait;
     private $hash;
+    private $key;
+    private $blockSize;
     private $needReset;
 
     public function __construct(Hasher $hash, $key, $blockSize)
     {
         $this->hash = $hash;
+        $this->key = $key;
+        $this->blockSize = $blockSize;
         if (strlen($key) > $blockSize) {
             $key = $this->hash->update($key)->sum(true);
         }
@@ -23,6 +30,20 @@ class HashHMAC implements Hasher
         $this->outer = $okey;
         $this->inner = $ikey;
         $this->needReset = true;
+    }
+
+    public function compile()
+    {
+        return $this->toCompileRaw(array(
+            'hash' => $this->hash->compile(),
+            'key' => var_export($this->key, true),
+            'blockSize' => var_export($this->blockSize, true),
+        ));
+    }
+
+    public static function __set_state(array $props)
+    {
+        return new self($props['hash'], $props['key'], $props['blockSize']);
     }
 
     public function update($data)
