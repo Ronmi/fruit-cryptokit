@@ -13,6 +13,7 @@ class Base64Test extends \PHPUnit_Framework_TestCase
             array('123123', 'MTIzMTIz', 'more blocks'),
             array('1231', 'MTIzMQ==', 'not aligned'),
             array('1', 'MQ==', 'minimal non-aligned'),
+            array('', '', 'empty'),
         );
     }
 
@@ -23,8 +24,8 @@ class Base64Test extends \PHPUnit_Framework_TestCase
     {
         $mc = new Base64();
         $actual = $mc->encrypt($src);
-        $this->assertEquals($expect, $actual, $msg);
+        $this->assertEquals($expect, $actual, 'encrypt: ' . $msg);
         $actual = $mc->decrypt($actual);
-        $this->assertEquals($src, $actual, $msg);
+        $this->assertEquals($src, $actual, 'decrypt: ' . $msg);
     }
 }
