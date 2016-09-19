@@ -33,16 +33,6 @@ class Mcrypt implements Crypter
         $this->blockSize = mcrypt_get_block_size($this->cipher, $this->mode);
     }
 
-    public function compile()
-    {
-        return $this->toCompile(array(
-            'cipher' => $this->cipher,
-            'key' => $this->key,
-            'mode' => $this->mode,
-            'iv' => $this->iv,
-        ));
-    }
-
     public static function __set_state(array $props)
     {
         return new self($props['cipher'], $props['key'], $props['mode'], $props['iv']);

@@ -18,10 +18,10 @@
 	"lox/xhprof": "@dev"
     },
     "require": {
-        "fruit/core": "~0"
     },
     "suggest": {
-	"ext-mcrypt": "*"
+      "ext-mcrypt": "*",
+      "ext-hash": ">=1.1"
     },
     "autoload": {
         "psr-4": {

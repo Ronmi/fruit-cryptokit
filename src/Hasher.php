@@ -7,7 +7,7 @@ namespace Fruit\CryptoKit;
  *
  * The design is roughly copy of php hash extension.
  */
-interface Hasher extends \Fruit\Module
+interface Hasher
 {
     /**
      * update() and updateStream() allocates a context if needed,

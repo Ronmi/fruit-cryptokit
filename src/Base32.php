@@ -20,13 +20,6 @@ class Base32 implements Crypter
         $this->invertMap = null; // not prepared
     }
 
-    public static function __set_state(array $props)
-    {
-        $ret = new self($props['charMap']);
-        $ret->invertMap = $props['invertMap'];
-        return $ret;
-    }
-
     public function encrypt($data)
     {
         $ret = '';

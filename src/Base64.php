@@ -4,11 +4,6 @@ namespace Fruit\CryptoKit;
 
 class Base64 implements Crypter
 {
-    public static function __set_state(array $props)
-    {
-        return new self;
-    }
-
     public function encrypt($data)
     {
         return base64_encode($data);

@@ -20,11 +20,6 @@ class Hash implements Hasher
         $this->ctx = null;
     }
 
-    public function compile()
-    {
-        return $this->toCompile(array('algo' => $this->algo));
-    }
-
     public static function __set_state(array $props)
     {
         return new self($props['algo']);

@@ -29,15 +29,6 @@ class HashHMAC implements Hasher
         $this->needReset = true;
     }
 
-    public function compile()
-    {
-        return $this->toCompileRaw(array(
-            'hash' => $this->hash->compile(),
-            'key' => var_export($this->key, true),
-            'blockSize' => var_export($this->blockSize, true),
-        ));
-    }
-
     public static function __set_state(array $props)
     {
         return new self($props['hash'], $props['key'], $props['blockSize']);
