@@ -4,8 +4,6 @@ namespace Fruit\CryptoKit;
 
 class ROT13 implements Crypter
 {
-    use \Fruit\ModuleTrait;
-
     public static function __set_state(array $props)
     {
         return new self;
@@ -21,7 +19,11 @@ class ROT13 implements Crypter
         return str_rot13($data);
     }
 
-    public function getBlockSize()
+    public function getEncryptBlockSize()
+    {
+        return 1;
+    }
+    public function getDecryptBlockSize()
     {
         return 1;
     }

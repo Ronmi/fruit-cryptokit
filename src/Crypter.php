@@ -10,5 +10,6 @@ interface Crypter extends \Fruit\Module
     public function decrypt($data);
 
     // return negative number if not block cipher.
-    public function getBlockSize();
+    public function getEncryptBlockSize();
+    public function getDecryptBlockSize();
 }

@@ -2,16 +2,14 @@
 
 namespace Fruit\CryptoKit;
 
-use Fruit\ModuleHelperTrait;
-
 class Mcrypt implements Crypter
 {
-    use ModuleHelperTrait;
     private $module;
     private $key;
     private $iv;
     private $cipher;
     private $mode;
+    private $blockSize;
 
     public function __construct($cipher, $key, $mode, $iv = null)
     {
@@ -32,6 +30,7 @@ class Mcrypt implements Crypter
             $iv = mcrypt_create_iv($ivsize);
         }
         $this->iv = $iv;
+        $this->blockSize = mcrypt_get_block_size($this->cipher, $this->mode);
     }
 
     public function compile()
@@ -66,8 +65,12 @@ class Mcrypt implements Crypter
         return rtrim($ret, "\0");
     }
 
-    public function getBlockSize()
+    public function getEncryptBlockSize()
     {
-        return mcrypt_get_block_size($this->cipher, $this->mode);
+        return $this->blockSize;
+    }
+    public function getDecryptBlockSize()
+    {
+        return $this->blockSize;
     }
 }

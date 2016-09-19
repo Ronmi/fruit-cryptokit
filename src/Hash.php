@@ -6,8 +6,6 @@ namespace Fruit\CryptoKit;
 // function call when initializing.
 class Hash implements Hasher
 {
-    use \Fruit\ModuleHelperTrait;
-
     private $algo;
     private $ctx;
 

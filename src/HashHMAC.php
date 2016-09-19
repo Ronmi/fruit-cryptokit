@@ -2,13 +2,10 @@
 
 namespace Fruit\CryptoKit;
 
-use Fruit\ModuleHelperTrait;
-
 // place redundent codes in update() and updateStream() to prevent function call
 // when initializing.
 class HashHMAC implements Hasher
 {
-    use ModuleHelperTrait;
     private $hash;
     private $key;
     private $blockSize;

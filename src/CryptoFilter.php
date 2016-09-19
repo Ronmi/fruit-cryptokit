@@ -27,7 +27,11 @@ class CryptoFilter extends \php_user_filter
             $this->buffer .= $bucket->data;
         }
 
-        $blockSize = $this->crypter->getBlockSize();
+        if ($type == 'enrypt') {
+            $blockSize = $this->crypter->getEncryptBlockSize();
+        } else {
+            $blockSize = $this->crypter->getDecryptBlockSize();
+        }
         if ($blockSize < 1) {
             // stream cipher or special cases, encrypt every bucket
             $blockSize = 1;
