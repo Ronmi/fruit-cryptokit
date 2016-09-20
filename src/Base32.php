@@ -22,18 +22,28 @@ class Base32 implements Crypter
 
     public function encrypt($data)
     {
+        return self::doEncrypt($this->charMap, $data);
+    }
+
+    public static function E($data)
+    {
+        return self::doEncrypt(self::STD, $data);
+    }
+
+    private static function doEncrypt($map, $data)
+    {
         $ret = '';
         for ($l = strlen($data); $l > 5; $l -= 5) {
-            $ret .= $this->realEncrypt(substr($data, 0, 5));
+            $ret .= self::realEncrypt($map, substr($data, 0, 5));
             $data = substr($data, 5);
         }
         if ($l > 0) {
-            $ret .= $this->realEncrypt($data);
+            $ret .= self::realEncrypt($map, $data);
         }
         return $ret;
     }
 
-    private function realEncrypt($data)
+    private static function realEncrypt($map, $data)
     {
         $arr = array(0, 0, 0, 0, 0, 0, 0, 0);
         $l = strlen($data);
@@ -75,34 +85,13 @@ class Base32 implements Crypter
 
         $ret = '';
         for ($i = 0; $i < 8 - strlen($pad); $i++) {
-            $ret .= $this->charMap[$arr[$i]];
+            $ret .= $map[$arr[$i]];
         }
         return $ret . $pad;
     }
 
     public function decrypt($data)
     {
-        $ret = '';
-        for ($l = strlen($data); $l > 8; $l -= 8) {
-            $ret .= $this->realDecrypt(substr($data, 0, 8));
-            $data = substr($data, 8);
-        }
-        if ($l > 0) {
-            $ret .= $this->realDecrypt($data);
-        }
-        return $ret;
-    }
-
-    private function realDecrypt($data)
-    {
-        // strip padding
-        $data = rtrim($data, '=');
-        // data length can not be 1, 3 or 6
-        $l = strlen($data);
-        if ($l === 1 or $l === 3 or $l === 6) {
-            return '';
-        }
-
         // prepare invert map
         if ($this->invertMap === null) {
             $this->invertMap = array();
@@ -112,29 +101,72 @@ class Base32 implements Crypter
             }
         }
 
+        return self::doDecrypt($this->invertMap, strtoupper($data));
+    }
+
+    public static function D($data)
+    {
+        static $map = array(
+            // hard-coded here, make it run faster
+            'A' =>  0, 'B' =>  1, 'C' =>  2, 'D' =>  3,
+            'E' =>  4, 'F' =>  5, 'G' =>  6, 'H' =>  7,
+            'I' =>  8, 'J' =>  9, 'K' => 10, 'L' => 11,
+            'M' => 12, 'N' => 13, 'O' => 14, 'P' => 15,
+            'Q' => 16, 'R' => 17, 'S' => 18, 'T' => 19,
+            'U' => 20, 'V' => 21, 'W' => 22, 'X' => 23,
+            'Y' => 24, 'Z' => 25, '2' => 26, '3' => 27,
+            '4' => 28, '5' => 29, '6' => 30, '7' => 31,
+        );
+
+        return self::doDecrypt($map, strtoupper($data));
+    }
+
+    private static function doDecrypt($map, $data)
+    {
+        $ret = '';
+        for ($l = strlen($data); $l > 8; $l -= 8) {
+            $ret .= self::realDecrypt($map, substr($data, 0, 8));
+            $data = substr($data, 8);
+        }
+        if ($l > 0) {
+            $ret .= self::realDecrypt($map, $data);
+        }
+        return $ret;
+    }
+
+    private static function realDecrypt($map, $data)
+    {
+        // strip padding
+        $data = rtrim($data, '=');
+        // data length can not be 1, 3 or 6
+        $l = strlen($data);
+        if ($l === 1 or $l === 3 or $l === 6) {
+            return '';
+        }
+
         $ret = '';
         switch ($l) {
             case 8: // 5 chars
-                $c1 = $this->invertMap[$data[7]];
-                $c2 = $this->invertMap[$data[6]];
+                $c1 = $map[$data[7]];
+                $c2 = $map[$data[6]];
                 $ret = chr($c1 | ($c2 << 5)) . $ret;
             case 7:
-                $c1 = $this->invertMap[$data[6]];
-                $c2 = $this->invertMap[$data[5]];
-                $c3 = $this->invertMap[$data[4]];
+                $c1 = $map[$data[6]];
+                $c2 = $map[$data[5]];
+                $c3 = $map[$data[4]];
                 $ret = chr(($c1 >> 3) | ($c2 << 2) | ($c3 << 7)) . $ret;
             case 5:
-                $c1 = $this->invertMap[$data[4]];
-                $c2 = $this->invertMap[$data[3]];
+                $c1 = $map[$data[4]];
+                $c2 = $map[$data[3]];
                 $ret = chr(($c1 >> 1) | ($c2 << 4)) . $ret;
             case 4:
-                $c1 = $this->invertMap[$data[3]];
-                $c2 = $this->invertMap[$data[2]];
-                $c3 = $this->invertMap[$data[1]];
+                $c1 = $map[$data[3]];
+                $c2 = $map[$data[2]];
+                $c3 = $map[$data[1]];
                 $ret = chr(($c1 >> 4) | ($c2 << 1) | ($c3 << 6)) . $ret;
             default:
-                $c1 = $this->invertMap[$data[1]];
-                $c2 = $this->invertMap[$data[0]];
+                $c1 = $map[$data[1]];
+                $c2 = $map[$data[0]];
                 $ret = chr(($c1 >> 2) | ($c2 << 3)) . $ret;
         }
 

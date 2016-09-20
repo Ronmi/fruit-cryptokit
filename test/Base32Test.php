@@ -23,9 +23,24 @@ class Base32Test extends \PHPUnit_Framework_TestCase
     public function testBase32($src, $expect, $msg)
     {
         $mc = new Base32();
-        $actual = $mc->encrypt($src);
-        $this->assertEquals($expect, $actual, 'encrypt: ' . $msg);
-        $actual = $mc->decrypt($actual);
+        $encoded = $mc->encrypt($src);
+        $this->assertEquals($expect, $encoded, 'encrypt: ' . $msg);
+        $actual = $mc->decrypt($encoded);
         $this->assertEquals($src, $actual, 'decrypt: ' . $msg);
+        $actual = $mc->decrypt(strtolower($encoded));
+        $this->assertEquals($src, $actual, 'decrypt(lower): ' . $msg);
     }
+
+    /**
+     * @dataProvider base32P
+     */
+    public function testBase32Static($src, $expect, $msg)
+    {
+        $encoded = Base32::E($src);
+        $this->assertEquals($expect, $encoded, 'encrypt: ' . $msg);
+        $actual = Base32::D($encoded);
+        $this->assertEquals($src, $actual, 'decrypt: ' . $msg);
+        $actual = Base32::D(strtolower($encoded));
+        $this->assertEquals($src, $actual, 'decrypt(lower): ' . $msg);
+   }
 }
