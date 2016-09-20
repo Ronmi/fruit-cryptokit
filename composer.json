@@ -14,7 +14,7 @@
 	"pdepend/pdepend": "*",
 	"phpmd/phpmd": "*",
 	"sebastian/phpcpd": "*",
-	"fruit/benchkit": "1.1.2",
+	"fruit/benchkit": "~1",
 	"lox/xhprof": "@dev"
     },
     "require": {
