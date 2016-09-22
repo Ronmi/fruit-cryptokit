@@ -10,8 +10,8 @@ class Base32Test extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('12345', 'GEZDGNBV', 'minimal block'),
-            array('1234512345', 'GEZDGNBVGEZDGNBV', 'more blocks'),
-            array('123451', 'GEZDGNBVGE======', 'not aligned'),
+            array('1234567890', 'GEZDGNBVGY3TQOJQ', 'more blocks'),
+            array('123456789', 'GEZDGNBVGY3TQOI=', 'not aligned'),
             array('1', 'GE======', 'minimal non-aligned'),
             array('', '', 'empty'),
         );
