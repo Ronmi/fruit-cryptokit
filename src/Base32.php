@@ -74,13 +74,13 @@ class Base32 implements Crypter
         }
         switch ($l) {
             case 1:
-                $pad .= '=';
+                $pad .= '==';
             case 2:
-                $pad .= '==';
-            case 3:
                 $pad .= '=';
-            case 4:
+            case 3:
                 $pad .= '==';
+            case 4:
+                $pad .= '=';
         }
 
         $ret = '';
