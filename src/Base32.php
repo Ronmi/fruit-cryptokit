@@ -33,61 +33,56 @@ class Base32 implements Crypter
     private static function doEncrypt($map, $data)
     {
         $ret = '';
-        for ($l = strlen($data); $l > 5; $l -= 5) {
-            $ret .= self::realEncrypt($map, substr($data, 0, 5));
-            $data = substr($data, 5);
-        }
-        if ($l > 0) {
-            $ret .= self::realEncrypt($map, $data);
+        $len = strlen($data);
+        for ($x = 0; $x < $len; $x += 5) {
+            $l = $len - $x;
+            if ($l > 5) {
+                $l = 5;
+            }
+            $arr = array(0, 0, 0, 0, 0, 0, 0, 0);
+            $pad = '';
+            switch ($l) {
+                case 5:
+                    $b = ord($data[$x+4]);
+                    $arr[7] = $b & 0x1f;
+                    $arr[6] = $b >> 5;
+                case 4:
+                    $b = ord($data[$x+3]);
+                    $arr[6] |= ($b << 3) & 0x1f;
+                    $arr[5] = ($b >> 2) & 0x1f;
+                    $arr[4] = $b >> 7;
+                case 3:
+                    $b = ord($data[$x+2]);
+                    $arr[4] |= ($b << 1) & 0x1f;
+                    $arr[3] = ($b >> 4) & 0x1f;
+                case 2:
+                    $b = ord($data[$x+1]);
+                    $arr[3] |= ($b << 4) & 0x1f;
+                    $arr[2] = ($b >> 1) & 0x1f;
+                    $arr[1] = $b >> 6 & 0x1f;
+                default:
+                    $b = ord($data[$x]);
+                    $arr[1] |= ($b << 2) & 0x1f;
+                    $arr[0] = $b >> 3;
+            }
+            switch ($l) {
+                case 1:
+                    $pad .= '==';
+                case 2:
+                    $pad .= '=';
+                case 3:
+                    $pad .= '==';
+                case 4:
+                    $pad .= '=';
+            }
+
+            $l = strlen($pad);
+            for ($i = 0; $i < 8 - $l; $i++) {
+                $ret .= $map[$arr[$i]];
+            }
+            $ret .= $pad;
         }
         return $ret;
-    }
-
-    private static function realEncrypt($map, $data)
-    {
-        $arr = array(0, 0, 0, 0, 0, 0, 0, 0);
-        $l = strlen($data);
-        $pad = '';
-        switch ($l) {
-            case 5:
-                $b = ord($data[4]);
-                $arr[7] = $b & 0x1f;
-                $arr[6] = $b >> 5;
-            case 4:
-                $b = ord($data[3]);
-                $arr[6] |= ($b << 3) & 0x1f;
-                $arr[5] = ($b >> 2) & 0x1f;
-                $arr[4] = $b >> 7;
-            case 3:
-                $b = ord($data[2]);
-                $arr[4] |= ($b << 1) & 0x1f;
-                $arr[3] = ($b >> 4) & 0x1f;
-            case 2:
-                $b = ord($data[1]);
-                $arr[3] |= ($b << 4) & 0x1f;
-                $arr[2] = ($b >> 1) & 0x1f;
-                $arr[1] = $b >> 6 & 0x1f;
-            default:
-                $b = ord($data[0]);
-                $arr[1] |= ($b << 2) & 0x1f;
-                $arr[0] = $b >> 3;
-        }
-        switch ($l) {
-            case 1:
-                $pad .= '==';
-            case 2:
-                $pad .= '=';
-            case 3:
-                $pad .= '==';
-            case 4:
-                $pad .= '=';
-        }
-
-        $ret = '';
-        for ($i = 0; $i < 8 - strlen($pad); $i++) {
-            $ret .= $map[$arr[$i]];
-        }
-        return $ret . $pad;
     }
 
     public function decrypt($data)
