@@ -96,7 +96,7 @@ class Base32 implements Crypter
             }
         }
 
-        return self::doDecrypt($this->invertMap, strtoupper($data));
+        return self::doDecrypt($this->invertMap, $data);
     }
 
     public static function D($data)
@@ -113,7 +113,7 @@ class Base32 implements Crypter
             '4' => 28, '5' => 29, '6' => 30, '7' => 31,
         );
 
-        return self::doDecrypt($map, strtoupper($data));
+        return self::doDecrypt(self::$map, $data);
     }
 
     private static function doDecrypt($map, $data)

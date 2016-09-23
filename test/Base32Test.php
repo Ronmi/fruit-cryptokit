@@ -27,8 +27,6 @@ class Base32Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $encoded, 'encrypt: ' . $msg);
         $actual = $mc->decrypt($encoded);
         $this->assertEquals($src, $actual, 'decrypt: ' . $msg);
-        $actual = $mc->decrypt(strtolower($encoded));
-        $this->assertEquals($src, $actual, 'decrypt(lower): ' . $msg);
     }
 
     /**
@@ -40,7 +38,5 @@ class Base32Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $encoded, 'encrypt: ' . $msg);
         $actual = Base32::D($encoded);
         $this->assertEquals($src, $actual, 'decrypt: ' . $msg);
-        $actual = Base32::D(strtolower($encoded));
-        $this->assertEquals($src, $actual, 'decrypt(lower): ' . $msg);
    }
 }
