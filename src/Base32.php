@@ -119,52 +119,47 @@ class Base32 implements Crypter
     private static function doDecrypt($map, $data)
     {
         $ret = '';
-        for ($l = strlen($data); $l > 8; $l -= 8) {
-            $ret .= self::realDecrypt($map, substr($data, 0, 8));
-            $data = substr($data, 8);
-        }
-        if ($l > 0) {
-            $ret .= self::realDecrypt($map, $data);
-        }
-        return $ret;
-    }
-
-    private static function realDecrypt($map, $data)
-    {
-        // strip padding
         $data = rtrim($data, '=');
-        // data length can not be 1, 3 or 6
-        $l = strlen($data);
-        if ($l === 1 or $l === 3 or $l === 6) {
-            return '';
-        }
+        $len = strlen($data);
+        for ($i = strlen($data); $i > 0; $i -= 8) {
+            $l = $i;
+            $x = $len - $l;
+            if ($l > 8) {
+                $l = 8;
+            }
 
-        $ret = '';
-        switch ($l) {
-            case 8: // 5 chars
-                $c1 = $map[$data[7]];
-                $c2 = $map[$data[6]];
-                $ret = chr($c1 | ($c2 << 5)) . $ret;
-            case 7:
-                $c1 = $map[$data[6]];
-                $c2 = $map[$data[5]];
-                $c3 = $map[$data[4]];
-                $ret = chr(($c1 >> 3) | ($c2 << 2) | ($c3 << 7)) . $ret;
-            case 5:
-                $c1 = $map[$data[4]];
-                $c2 = $map[$data[3]];
-                $ret = chr(($c1 >> 1) | ($c2 << 4)) . $ret;
-            case 4:
-                $c1 = $map[$data[3]];
-                $c2 = $map[$data[2]];
-                $c3 = $map[$data[1]];
-                $ret = chr(($c1 >> 4) | ($c2 << 1) | ($c3 << 6)) . $ret;
-            default:
-                $c1 = $map[$data[1]];
-                $c2 = $map[$data[0]];
-                $ret = chr(($c1 >> 2) | ($c2 << 3)) . $ret;
-        }
+            $tmp = '';
+            switch ($l) {
+                case 1:
+                case 3:
+                case 6:
+                    return '';
+                case 8: // 5 chars
+                    $c1 = $map[$data[$x+7]];
+                    $c2 = $map[$data[$x+6]];
+                    $tmp = chr($c1 | ($c2 << 5)) . $tmp;
+                case 7:
+                    $c1 = $map[$data[$x+6]];
+                    $c2 = $map[$data[$x+5]];
+                    $c3 = $map[$data[$x+4]];
+                    $tmp = chr(($c1 >> 3) | ($c2 << 2) | ($c3 << 7)) . $tmp;
+                case 5:
+                    $c1 = $map[$data[$x+4]];
+                    $c2 = $map[$data[$x+3]];
+                    $tmp = chr(($c1 >> 1) | ($c2 << 4)) . $tmp;
+                case 4:
+                    $c1 = $map[$data[$x+3]];
+                    $c2 = $map[$data[$x+2]];
+                    $c3 = $map[$data[$x+1]];
+                    $tmp = chr(($c1 >> 4) | ($c2 << 1) | ($c3 << 6)) . $tmp;
+                default:
+                    $c1 = $map[$data[$x+1]];
+                    $c2 = $map[$data[$x]];
+                    $tmp = chr(($c1 >> 2) | ($c2 << 3)) . $tmp;
+            }
 
+            $ret .= $tmp;
+        }
         return $ret;
     }
 
