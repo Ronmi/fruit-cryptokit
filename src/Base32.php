@@ -120,7 +120,7 @@ class Base32 implements Crypter
     );
     public static function D($data)
     {
-        return self::doDecrypt(self::$map, $data);
+        return self::doDecrypt(self::$mapStd, $data);
     }
 
     private static function doDecrypt($map, $data)
