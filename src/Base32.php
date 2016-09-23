@@ -12,12 +12,13 @@ class Base32 implements Crypter
 
     public function __construct($str = self::STD)
     {
+        $this->invertMap = null; // not prepared
         if (strlen($str) !== 32) {
             $str = self::STD;
+            $this->invertMap = self::mapStd;
         }
 
         $this->charMap = $str;
-        $this->invertMap = null; // not prepared
     }
 
     public function encrypt($data)
